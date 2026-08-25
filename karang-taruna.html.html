@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal Kegiatan Karang Taruna</title>
+    <style>
+        :root {
+            --primary-color: #0056b3; 
+            --secondary-color: #f8f9fa;
+            --text-color: #333;
+            --badge-color: #e8f0fe;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #eef2f5;
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        header h1 { margin: 0; font-size: 1.8em; }
+
+        .container { max-width: 800px; margin: 30px auto; padding: 0 20px; }
+
+        .form-card {
+            background: white; padding: 25px; border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 30px;
+            border-top: 5px solid var(--primary-color);
+        }
+
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; margin-bottom: 5px; font-weight: bold; color: #555; }
+
+        /* Tambahan style untuk select/dropdown */
+        input[type="text"], input[type="date"], input[type="file"], textarea, select {
+            width: 100%; padding: 10px; border: 1px solid #ccc;
+            border-radius: 6px; box-sizing: border-box; font-family: inherit;
+        }
+
+        textarea { resize: vertical; height: 100px; }
+
+        .btn-submit {
+            background-color: var(--primary-color); color: white; padding: 12px 25px;
+            border: none; border-radius: 6px; cursor: pointer; font-weight: bold;
+            width: 100%; font-size: 1.1em; transition: background 0.3s;
+        }
+        .btn-submit:hover { background-color: #004494; }
+
+        /* Desain Filter */
+        .filter-section {
+            display: flex; gap: 10px; margin-bottom: 20px;
+            flex-wrap: wrap; justify-content: center;
+        }
+
+        .filter-btn {
+            background-color: white; color: #555; border: 1px solid #ddd;
+            padding: 8px 16px; border-radius: 20px; cursor: pointer;
+            font-weight: 600; transition: all 0.3s;
+        }
+
+        .filter-btn:hover { background-color: #f1f1f1; }
+        
+        /* Tombol filter yang sedang aktif */
+        .filter-btn.active {
+            background-color: var(--primary-color); color: white; border-color: var(--primary-color);
+        }
+
+        /* Desain Feed / Kartu */
+        .feed { display: flex; flex-direction: column; gap: 20px; }
+        
+        .activity-card {
+            background: white; border-radius: 10px; overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.08); display: flex; flex-direction: row;
+        }
+
+        .activity-card img { width: 250px; height: 250px; object-fit: cover; }
+        .activity-info { padding: 20px; flex: 1; display: flex; flex-direction: column; justify-content: center; }
+        .activity-info h3 { margin: 0 0 10px 0; color: var(--primary-color); font-size: 1.5em; }
+        
+        .meta-info { margin-bottom: 15px; display: flex; gap: 10px; flex-wrap: wrap; }
+        
+        .activity-date, .activity-category {
+            font-size: 0.85em; color: #555; background: #eef2f5;
+            padding: 5px 10px; border-radius: 4px; font-weight: bold;
+        }
+        
+        /* Warna khusus untuk label kategori */
+        .activity-category { background: var(--badge-color); color: var(--primary-color); }
+
+        .activity-desc { line-height: 1.6; margin: 0; }
+
+        @media (max-width: 600px) {
+            .activity-card { flex-direction: column; }
+            .activity-card img { width: 100%; height: 200px; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Sistem Informasi Karang Taruna</h1>
+        <p style="margin: 5px 0 0 0; font-size: 0.9em;">Dokumentasi & Laporan Kegiatan</p>
+    </header>
+
+    <div class="container">
+        <!-- Form Upload -->
+        <div class="form-card">
+            <h2>Upload Kegiatan Baru</h2>
+            <form id="activityForm">
+                <div class="form-group">
+                    <label>Nama Kegiatan</label>
+                    <input type="text" id="titleInput" placeholder="Misal: Kerja Bakti Desa" required>
+                </div>
+                
+                <!-- Dropdown Kategori -->
+                <div class="form-group">
+                    <label>Kategori</label>
+                    <select id="categoryInput" required>
+                        <option value="" disabled selected>Pilih Kategori...</option>
+                        <option value="Sosial">Sosial / Masyarakat</option>
+                        <option value="Olahraga">Olahraga</option>
+                        <option value="Rapat">Rapat / Musyawarah</option>
+                        <option value="Seni">Seni & Budaya</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Tanggal Pelaksanaan</label>
+                    <input type="date" id="dateInput" required>
+                </div>
+                <div class="form-group">
+                    <label>Foto Dokumentasi</label>
+                    <input type="file" id="photoInput" accept="image/*" required>
+                </div>
+                <div class="form-group">
+                    <label>Keterangan / Hasil Kegiatan</label>
+                    <textarea id="descInput" placeholder="Ceritakan detail kegiatan di sini..." required></textarea>
+                </div>
+                <button type="submit" class="btn-submit">Publikasikan Kegiatan</button>
+            </form>
+        </div>
+
+        <!-- Tombol Filter -->
+        <div class="filter-section">
+            <button class="filter-btn active" data-filter="Semua">Semua</button>
+            <button class="filter-btn" data-filter="Sosial">Sosial</button>
+            <button class="filter-btn" data-filter="Olahraga">Olahraga</button>
+            <button class="filter-btn" data-filter="Rapat">Rapat</button>
+            <button class="filter-btn" data-filter="Seni">Seni</button>
+        </div>
+
+        <div class="feed" id="feedContainer">
+            <!-- Kartu kegiatan akan muncul di sini -->
+        </div>
+    </div>
+
+    <script>
+        const activityForm = document.getElementById('activityForm');
+        const feedContainer = document.getElementById('feedContainer');
+        const filterBtns = document.querySelectorAll('.filter-btn');
+
+        // FUNGSI 1: MENGUNGGAH KEGIATAN
+        activityForm.addEventListener('submit', function(event) {
+            event.preventDefault(); 
+
+            const title = document.getElementById('titleInput').value;
+            const category = document.getElementById('categoryInput').value; // Mengambil data kategori
+            const date = document.getElementById('dateInput').value;
+            const desc = document.getElementById('descInput').value;
+            const file = document.getElementById('photoInput').files[0];
+
+            if (file) {
+                const imageUrl = URL.createObjectURL(file);
+                const dateObj = new Date(date);
+                const formattedDate = dateObj.toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+
+                const card = document.createElement('div');
+                card.className = 'activity-card';
+                // Menyimpan data kategori di dalam HTML menggunakan atribut data-*
+                card.setAttribute('data-kategori', category); 
+
+                card.innerHTML = `
+                    <img src="${imageUrl}" alt="${title}">
+                    <div class="activity-info">
+                        <h3>${title}</h3>
+                        <div class="meta-info">
+                            <span class="activity-category">📌 ${category}</span>
+                            <span class="activity-date">📅 ${formattedDate}</span>
+                        </div>
+                        <p class="activity-desc">${desc}</p>
+                    </div>
+                `;
+
+                feedContainer.prepend(card);
+                activityForm.reset();
+
+                // Kembalikan filter ke "Semua" setelah upload baru agar foto baru terlihat
+                document.querySelector('[data-filter="Semua"]').click();
+            }
+        });
+
+        // FUNGSI 2: FILTER KEGIATAN
+        filterBtns.forEach(btn => {
+            btn.addEventListener('click', function() {
+                // Hapus warna aktif dari semua tombol
+                filterBtns.forEach(b => b.classList.remove('active'));
+                // Tambahkan warna aktif ke tombol yang diklik
+                this.classList.add('active');
+
+                const selectedFilter = this.getAttribute('data-filter');
+                const allCards = document.querySelectorAll('.activity-card');
+
+                allCards.forEach(card => {
+                    const cardCategory = card.getAttribute('data-kategori');
+
+                    // Jika filter "Semua" atau kategorinya cocok, tampilkan kartu. Jika tidak, sembunyikan.
+                    if (selectedFilter === 'Semua' || selectedFilter === cardCategory) {
+                        card.style.display = 'flex';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
